@@ -4,7 +4,17 @@ mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopol
   console.log("DB CONNECTION SUCCESSFUL");
 });
 
-let Person;
+
+/*
+Create a person schema called personSchema with the following shape:
+
+A required name field of type String
+An age field of type Number
+A favoriteFoods field of type [String]
+Use the Mongoose basic schema types. If you want you can also add more fields, use simple validators like required or unique, and set default values. See our Mongoose article.
+
+Now, create a model from the personSchema and assign it to the existing variable Person.
+*/
 
 const personSchema = new mongoose.Schema({
   name:{
@@ -15,14 +25,32 @@ const personSchema = new mongoose.Schema({
   favoriteFoods: [String]
 });
 
-Person = mongoose.model("Person", personSchema);
+let Person = mongoose.model("Person", personSchema);
+
+/*
+Within the createAndSavePerson function, create a document instance using the Person model constructor you built before. Pass to the constructor an object having the fields name, age, and favoriteFoods. Their types must conform to the ones in the personSchema. Then, call the method document.save() on the returned document instance. Pass to it a callback using the Node convention. This is a common pattern; all the following CRUD methods take a callback function like this as the last argument.
+*/
 
 const createAndSavePerson = (done) => {
-  done(null /*, data*/);
+  const person = new Person({name: "Predrag", age: 27, favoriteFoods: ["Lasagna"]})
+
+  person.save(function(err, data) {
+  done(null, data);
+  });  
 };
 
+/*
+Modify the createManyPeople function to create many people using Model.create() with the argument arrayOfPeople.
+
+Note: You can reuse the model you instantiated in the previous exercise.
+*/
+
 const createManyPeople = (arrayOfPeople, done) => {
-  done(null /*, data*/);
+  const people = Person.create(arrayOfPeople);
+  people.save((err, data) => {
+    done(null, data);
+  })
+  
 };
 
 const findPeopleByName = (personName, done) => {
